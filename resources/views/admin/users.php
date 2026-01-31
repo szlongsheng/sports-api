@@ -5,12 +5,7 @@ $showHeader = true;
 $pageTitle = '管理员';
 $baseUrl = '/admin';
 $siteName = '管理后台';
-$navItems = [
-  ['label' => '仪表盘', 'url' => '/admin/dashboard', 'active' => false],
-  ['label' => '管理员', 'url' => '/admin/users', 'active' => true],
-  ['label' => '用户管理', 'url' => '/admin/members', 'active' => false],
-  ['label' => '单位管理', 'url' => '/admin/units', 'active' => false],
-];
+$navItems = admin_nav_items('/admin/users');
 $content = <<<'HTML'
 <div class="mb-6">
   <div class="flex items-center justify-between mb-6">
@@ -57,20 +52,18 @@ document.addEventListener('DOMContentLoaded', () => {
       { key: 'username', label: '用户名' },
       { key: 'name', label: '姓名' },
       { key: 'status', label: '状态', render: (v) => v === 1 ? '<span class="text-emerald-400">启用</span>' : '<span class="text-slate-500">禁用</span>' },
-      { key: 'created_at', label: '创建时间' },
+      { key: 'created_at', label: '创建时间', render: (v) => formatDateTime(v) },
     ],
     filters: [
       { key: 'keyword', placeholder: '搜索用户名/姓名' },
     ],
     batchActions: ['delete', 'enable', 'disable'],
-    rowActions: (row) => `
-      <button type="button" class="row-edit text-emerald-400 hover:text-emerald-300 text-sm mr-2" data-id="${row.id}">编辑</button>
-      <button type="button" class="row-delete text-red-400 hover:text-red-300 text-sm" data-id="${row.id}">删除</button>
-    `,
+    rowActions: (row) => RowActions.wrap([RowActions.edit(row), RowActions.delete(row)]),
     bindRowActions: (container, reload) => {
       container.addEventListener('click', (e) => {
-        if (e.target.classList.contains('row-delete')) {
-          const id = e.target.dataset.id;
+        const deleteBtn = e.target.closest('.row-delete');
+        if (deleteBtn) {
+          const id = deleteBtn.dataset.id;
           Modal.confirm('确定删除？', async () => {
             await api('/users/' + id, { method: 'DELETE' });
             reload();

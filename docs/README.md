@@ -64,10 +64,10 @@ php -S localhost:8080 -t public
 # 健康检查
 curl http://localhost:8080/ping
 
-# 管理端登录 (admin / admin123)
+# 管理端登录 (admin / password)
 curl -X POST http://localhost:8080/admin/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"username":"admin","password":"admin123"}'
+  -d '{"username":"admin","password":"password"}'
 
 # 小程序 API 配置
 curl http://localhost:8080/api/config
@@ -161,8 +161,16 @@ Authorization: Bearer <token>
 ## 共享组件
 管理端/单位端共用：分页、筛选、CRUD 基类、批量操作、OSS 上传、弹窗、表格等。详见 [COMPONENTS.md](COMPONENTS.md)。
 
-- 管理端页面: http://localhost:8080/admin/login（admin / admin123）
-- 单位端页面: http://localhost:8080/unit/login（任意账号密码）
+## 云端减脂计划 - 扩展文档
+
+| 文档 | 说明 |
+|------|------|
+| [FEATURES.md](FEATURES.md) | 功能需求规格：多单位/单元、打卡任务、积分、奖品兑换等 |
+| [DATA_MODEL.md](DATA_MODEL.md) | 数据模型设计：表结构、实体关系、积分规则 JSON |
+| [ROADMAP.md](ROADMAP.md) | 开发路线图与任务拆解：5 阶段、接口清单、交付物 |
+
+- 管理端页面: http://localhost:8080/admin/login（admin / password）
+- 单位端页面: http://localhost:8080/unit/login（unit1 / secret）
 
 ## 扩展开发
 

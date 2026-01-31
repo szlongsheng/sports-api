@@ -38,9 +38,9 @@
 </head>
 <body class="min-h-screen transition-colors duration-300" 
       :class="isDark ? 'bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950' : 'bg-gradient-to-br from-slate-50 via-white to-slate-50'">
-  <div class="flex min-h-screen relative" x-data="appState()">
+  <div class="min-h-screen relative" x-data="appState()">
     <?php if (!empty($showSidebar)): ?>
-    <aside class="w-64 flex-shrink-0 backdrop-blur-xl border-r flex flex-col shadow-2xl relative z-10 transition-colors duration-300"
+    <aside class="fixed top-0 left-0 w-64 h-screen backdrop-blur-xl border-r flex flex-col shadow-2xl z-20 transition-colors duration-300"
            :class="isDark ? 'bg-slate-900/95 border-slate-700/30' : 'bg-white/95 border-slate-200/50'">
       <div class="p-6 border-b transition-colors duration-300" :class="isDark ? 'border-slate-700/30' : 'border-slate-200/50'">
         <a href="<?= $baseUrl ?? '/admin' ?>" class="flex items-center gap-3 group">
@@ -52,7 +52,7 @@
           <span class="text-lg font-bold bg-gradient-to-r from-emerald-400 to-emerald-300 bg-clip-text text-transparent"><?= htmlspecialchars($siteName ?? '管理后台') ?></span>
         </a>
       </div>
-      <nav class="flex-1 p-3 space-y-1">
+      <nav class="flex-1 p-3 space-y-1 overflow-y-auto">
         <?php foreach ($navItems ?? [] as $item): ?>
         <a href="<?= htmlspecialchars($item['url']) ?>" class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 <?= (!empty($item['active'])) ? 'bg-gradient-to-r from-emerald-500/20 to-emerald-600/10 text-emerald-400 border border-emerald-500/20 shadow-lg shadow-emerald-500/10' : '' ?>"
            :class="'<?= (!empty($item['active'])) ? '' : 'hover:bg-slate-800/60' ?>' + (isDark ? ' text-slate-400 hover:text-white' : ' text-slate-600 hover:text-slate-900 hover:bg-slate-100')"
@@ -73,14 +73,14 @@
             </svg>
           </div>
           <div class="flex-1 min-w-0">
-            <p class="text-sm font-medium truncate transition-colors" :class="isDark ? 'text-slate-300' : 'text-slate-700'" x-text="user?.name || user?.username || '用户'"></p>
+            <p class="text-sm font-medium truncate transition-colors" :class="isDark ? 'text-slate-300' : 'text-slate-700'" x-text="user?.name || user?.username || user?.account || '用户'"></p>
             <p class="text-xs transition-colors" :class="isDark ? 'text-slate-500' : 'text-slate-400'">在线</p>
           </div>
         </div>
       </div>
     </aside>
     <?php endif; ?>
-    <main class="flex-1 flex flex-col min-w-0 relative z-10">
+    <main class="<?= !empty($showSidebar) ? 'ml-64' : '' ?> flex-1 flex flex-col min-w-0 relative z-10 min-h-screen">
       <?php if (!empty($showHeader)): ?>
       <header class="h-16 flex-shrink-0 flex items-center justify-between px-8 border-b backdrop-blur-xl transition-colors duration-300"
               :class="isDark ? 'border-slate-700/30 bg-slate-900/60' : 'border-slate-200/50 bg-white/60'">
@@ -146,7 +146,11 @@
       };
     }
   </script>
-  <script src="/build/js/app.js"></script>
+  <script src="/build/js/api.js"></script>
+  <script src="/build/js/state.js"></script>
+  <script src="/build/js/modal.js"></script>
+  <script src="/build/js/ckeditor.js"></script>
+  <script src="/build/js/crud.js"></script>
   <script src="/build/js/upload.js"></script>
   <?= $scripts ?? '' ?>
 </body>

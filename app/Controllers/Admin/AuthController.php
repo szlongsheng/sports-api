@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controllers\Admin;
 
+use App\Models\Admin;
 use App\Services\JwtService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -21,17 +22,34 @@ class AuthController
     public function login(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         $data = $request->getParsedBody() ?? [];
-        $username = $data['username'] ?? '';
+        $username = trim($data['username'] ?? '');
         $password = $data['password'] ?? '';
 
-        // TODO: 从数据库验证，使用 password_verify($password, $admin->password)
-        if ($username === 'admin' && $password === 'admin123') {
-            $token = (new JwtService())->create(['id' => 1, 'username' => $username, 'guard' => 'admin']);
-            $response->getBody()->write(json_encode(json_success(['token' => $token, 'user' => ['id' => 1, 'username' => $username, 'name' => '管理员']])));
-            return $response;
+        if (!$username || !$password) {
+            $response->getBody()->write(json_encode(json_error(401, '请输入用户名和密码')));
+            return $response->withStatus(401);
         }
 
-        $response->getBody()->write(json_encode(json_error(401, '用户名或密码错误')));
-        return $response->withStatus(401);
+        $admin = Admin::where('username', $username)->first();
+        if (!$admin || $admin->status !== 1) {
+            $response->getBody()->write(json_encode(json_error(401, '用户名或密码错误')));
+            return $response->withStatus(401);
+        }
+
+        if (!password_verify($password, $admin->password)) {
+            $response->getBody()->write(json_encode(json_error(401, '用户名或密码错误')));
+            return $response->withStatus(401);
+        }
+
+        $token = (new JwtService())->create([
+            'id' => $admin->id,
+            'username' => $admin->username,
+            'guard' => 'admin',
+        ]);
+        $response->getBody()->write(json_encode(json_success([
+            'token' => $token,
+            'user' => ['id' => $admin->id, 'username' => $admin->username, 'name' => $admin->name],
+        ])));
+        return $response;
     }
 }

@@ -64,4 +64,39 @@ class PageController
         $response->getBody()->write($html);
         return $response->withHeader('Content-Type', 'text/html; charset=utf-8');
     }
+
+    public function unitCampaign(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+    {
+        $html = view('unit/campaign', []);
+        $response->getBody()->write($html);
+        return $response->withHeader('Content-Type', 'text/html; charset=utf-8');
+    }
+
+    public function unitUsers(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+    {
+        $html = view('unit/users', []);
+        $response->getBody()->write($html);
+        return $response->withHeader('Content-Type', 'text/html; charset=utf-8');
+    }
+
+    public function unitTasks(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+    {
+        $html = view('unit/tasks', []);
+        $response->getBody()->write($html);
+        return $response->withHeader('Content-Type', 'text/html; charset=utf-8');
+    }
+
+    public function unitCheckins(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+    {
+        $html = view('unit/checkins', []);
+        $response->getBody()->write($html);
+        return $response->withHeader('Content-Type', 'text/html; charset=utf-8');
+    }
+
+    public function unitPrizes(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+    {
+        $html = view('unit/prizes', []);
+        $response->getBody()->write($html);
+        return $response->withHeader('Content-Type', 'text/html; charset=utf-8');
+    }
 }

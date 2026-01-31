@@ -5,12 +5,7 @@ $showHeader = true;
 $pageTitle = '用户管理';
 $baseUrl = '/admin';
 $siteName = '管理后台';
-$navItems = [
-  ['label' => '仪表盘', 'url' => '/admin/dashboard', 'active' => false],
-  ['label' => '管理员', 'url' => '/admin/users', 'active' => false],
-  ['label' => '用户管理', 'url' => '/admin/members', 'active' => true],
-  ['label' => '单位管理', 'url' => '/admin/units', 'active' => false],
-];
+$navItems = admin_nav_items('/admin/members');
 $content = <<<'HTML'
 <div class="mb-6">
   <div>
@@ -59,7 +54,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       { key: 'phone', label: '手机号' },
       { key: 'unit', label: '所属单位', render: (v, row) => (row.unit && row.unit.name) ? row.unit.name : '-' },
       { key: 'openid', label: 'OpenID', render: (v) => v ? (String(v).slice(0, 12) + '…') : '-' },
-      { key: 'created_at', label: '注册时间' },
+      { key: 'created_at', label: '注册时间', render: (v) => formatDateTime(v) },
     ],
     filters: [
       { key: 'keyword', placeholder: '昵称/手机号/OpenID' },
@@ -67,21 +62,20 @@ document.addEventListener('DOMContentLoaded', async () => {
       { key: 'unit_id', type: 'select', placeholder: '全部单位', options: unitOptions },
     ],
     batchActions: ['delete'],
-    rowActions: (row) => `
-      <button type="button" class="row-edit text-emerald-400 hover:text-emerald-300 text-sm mr-2" data-id="${row.id}">编辑</button>
-      <button type="button" class="row-delete text-red-400 hover:text-red-300 text-sm" data-id="${row.id}">删除</button>
-    `,
+    rowActions: (row) => RowActions.wrap([RowActions.edit(row), RowActions.delete(row)]),
     bindRowActions: (container, reload) => {
       container.addEventListener('click', (e) => {
-        if (e.target.classList.contains('row-delete')) {
-          const id = e.target.dataset.id;
+        const deleteBtn = e.target.closest('.row-delete');
+        const editBtn = e.target.closest('.row-edit');
+        if (deleteBtn) {
+          const id = deleteBtn.dataset.id;
           Modal.confirm('确定删除该用户？', async () => {
             await api('/members/' + id, { method: 'DELETE' });
             reload();
           });
         }
-        if (e.target.classList.contains('row-edit')) {
-          const id = e.target.dataset.id;
+        if (editBtn) {
+          const id = editBtn.dataset.id;
           fetchRowAndEdit(id, reload);
         }
       });

@@ -80,6 +80,61 @@
   .light .input { 
     @apply w-full px-3 py-2 rounded-lg bg-white border border-slate-300 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all duration-200; 
   }
+
+  /* CKEditor 高度与样式 */
+  .ck.ck-editor__editable:not(.ck-editor__nested-editable) {
+    min-height: 320px;
+  }
+  /* CKEditor 暗色模式 */
+  .dark .ck.ck-editor__editable:not(.ck-editor__nested-editable) {
+    @apply bg-slate-800/50 border-slate-700 text-slate-200;
+  }
+  .dark .ck.ck-toolbar {
+    @apply bg-slate-800/80 border-slate-700;
+  }
+  .dark .ck.ck-toolbar .ck-button,
+  .dark .ck.ck-toolbar .ck-dropdown__button {
+    @apply text-slate-400 hover:text-white hover:bg-slate-700/50;
+  }
+  .dark .ck.ck-toolbar .ck-button.ck-on,
+  .dark .ck.ck-toolbar .ck-button:hover {
+    @apply text-emerald-400;
+  }
+
+  /* 表格行操作按钮 */
+  .crud-row-actions {
+    @apply flex items-center justify-end gap-1.5 flex-wrap;
+  }
+  .crud-row-btn {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 no-underline;
+  }
+  .crud-row-btn:focus {
+    @apply outline-none ring-2 ring-offset-2;
+  }
+  .dark .crud-row-btn:focus {
+    @apply ring-offset-slate-900;
+  }
+  .light .crud-row-btn:focus {
+    @apply ring-offset-white;
+  }
+  .dark .crud-row-btn.row-edit {
+    @apply text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10 focus:ring-emerald-500/30;
+  }
+  .light .crud-row-btn.row-edit {
+    @apply text-emerald-600 hover:text-emerald-700 hover:bg-emerald-500/10 focus:ring-emerald-500/20;
+  }
+  .dark .crud-row-btn.row-delete {
+    @apply text-red-400 hover:text-red-300 hover:bg-red-500/10 focus:ring-red-500/30;
+  }
+  .light .crud-row-btn.row-delete {
+    @apply text-red-600 hover:text-red-700 hover:bg-red-500/10 focus:ring-red-500/20;
+  }
+  .dark .crud-row-btn.crud-row-btn-link {
+    @apply text-blue-400 hover:text-blue-300 hover:bg-blue-500/10 focus:ring-blue-500/30;
+  }
+  .light .crud-row-btn.crud-row-btn-link {
+    @apply text-blue-600 hover:text-blue-700 hover:bg-blue-500/10 focus:ring-blue-500/20;
+  }
 }
 
 @layer utilities {

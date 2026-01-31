@@ -8,8 +8,17 @@ use App\Middleware\CorsMiddleware;
 use App\Middleware\JsonResponseMiddleware;
 
 return function (App $app): void {
-    // 解析 JSON 请求体
-    $app->addBodyParsingMiddleware();
+    // 解析 JSON 请求体（跳过 multipart，避免影响文件上传）
+    $app->add(new class implements \Psr\Http\Server\MiddlewareInterface {
+        public function process(\Psr\Http\Message\ServerRequestInterface $request, \Psr\Http\Server\RequestHandlerInterface $handler): \Psr\Http\Message\ResponseInterface
+        {
+            $ct = $request->getHeader('Content-Type')[0] ?? '';
+            if (stripos($ct, 'multipart/form-data') === 0) {
+                return $handler->handle($request);
+            }
+            return (new \Slim\Middleware\BodyParsingMiddleware())->process($request, $handler);
+        }
+    });
 
     // 路由中间件
     $app->addRoutingMiddleware();

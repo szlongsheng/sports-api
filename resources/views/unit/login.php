@@ -135,6 +135,14 @@
       window.location.href = '/unit/dashboard';
     }
     
+        // 从 URL 参数预填账号
+    const params = new URLSearchParams(location.search);
+    const account = params.get('account');
+    if (account) {
+      const accountInput = document.querySelector('input[name="account"]');
+      if (accountInput) accountInput.value = account;
+    }
+
     document.getElementById('login-form').onsubmit = async (e) => {
       e.preventDefault();
       const fd = new FormData(e.target);
@@ -148,7 +156,7 @@
         const data = await res.json();
         if (data.code === 0 && data.data?.token) {
           localStorage.setItem('unit_token', data.data.token);
-          localStorage.setItem('user', JSON.stringify(data.data.user || { account: fd.get('account') }));
+          localStorage.setItem('unit_user', JSON.stringify(data.data.user || { account: fd.get('account') }));
           location.href = '/unit/dashboard';
         } else {
           errEl.textContent = data.message || '登录失败';

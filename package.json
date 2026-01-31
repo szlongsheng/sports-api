@@ -3,9 +3,14 @@
   "private": true,
   "scripts": {
     "dev": "npx tailwindcss -i ./resources/css/app.css -o ./public/build/css/app.css --watch",
-    "build": "npx tailwindcss -i ./resources/css/app.css -o ./public/build/css/app.css --minify"
+    "build": "npx tailwindcss -i ./resources/css/app.css -o ./public/build/css/app.css --minify && npm run build:ckeditor",
+    "build:ckeditor": "mkdir -p public/build/libs/ckeditor && cp node_modules/ckeditor5-classic-plus/build/ckeditor.js public/build/libs/ckeditor/ && cp -r node_modules/ckeditor5-classic-plus/build/translations public/build/libs/ckeditor/",
+    "postinstall": "npm run build:ckeditor 2>/dev/null || true"
   },
   "devDependencies": {
     "tailwindcss": "^3.4.0"
+  },
+  "dependencies": {
+    "ckeditor5-classic-plus": "^41.3.0"
   }
 }
