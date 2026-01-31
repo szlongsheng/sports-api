@@ -5,12 +5,7 @@ $showHeader = true;
 $pageTitle = '管理员';
 $baseUrl = '/admin';
 $siteName = '管理后台';
-$navItems = [
-  ['label' => '仪表盘', 'url' => '/admin/dashboard', 'active' => false],
-  ['label' => '管理员', 'url' => '/admin/users', 'active' => true],
-  ['label' => '用户管理', 'url' => '/admin/members', 'active' => false],
-  ['label' => '单位管理', 'url' => '/admin/units', 'active' => false],
-];
+$navItems = admin_nav_items('/admin/users');
 $content = <<<'HTML'
 <div class="mb-6">
   <div class="flex items-center justify-between mb-6">

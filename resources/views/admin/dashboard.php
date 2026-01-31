@@ -5,12 +5,7 @@ $showHeader = true;
 $pageTitle = '仪表盘';
 $baseUrl = '/admin';
 $siteName = '管理后台';
-$navItems = [
-  ['label' => '仪表盘', 'url' => '/admin/dashboard', 'active' => true],
-  ['label' => '管理员', 'url' => '/admin/users', 'active' => false],
-  ['label' => '用户管理', 'url' => '/admin/members', 'active' => false],
-  ['label' => '单位管理', 'url' => '/admin/units', 'active' => false],
-];
+$navItems = admin_nav_items('/admin/dashboard');
 $content = <<<'HTML'
 <!-- 欢迎区域 -->
 <div class="mb-8">

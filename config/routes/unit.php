@@ -28,7 +28,8 @@ return function (App $app): void {
         $group->group('/api', function (RouteCollectorProxy $inner) {
             // 单位信息
             $inner->get('/profile', \App\Controllers\Unit\ProfileController::class . ':index');
-            
+            $inner->put('/profile', \App\Controllers\Unit\ProfileController::class . ':update');
+
             // 文件上传
             $inner->post('/upload/image', \App\Controllers\Common\UploadController::class . ':image');
             $inner->post('/upload/file', \App\Controllers\Common\UploadController::class . ':file');

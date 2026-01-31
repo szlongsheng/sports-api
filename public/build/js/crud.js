@@ -1,120 +1,31 @@
 /**
- * 共享前端组件 - Admin & Unit 共用
- * 风格: 深色简洁，emerald 主色
+ * 表格行操作按钮封装 - 统一风格与排版
+ * 用法: rowActions: (row) => RowActions.wrap([RowActions.edit(row), RowActions.delete(row)])
+ * 或:   rowActions: (row) => RowActions.wrap([RowActions.link(href, '登录'), RowActions.edit(row), RowActions.delete(row)])
  */
-
-const API_BASE = window.APP_BASE || '/admin';
-const API_SUFFIX = window.APP_API_SUFFIX || '/api'; // admin/unit 的 API 子路径
-const TOKEN_KEY = window.APP_TOKEN_KEY || 'token'; // 管理端 admin_token / 单位端 unit_token，与登录端一致
-
-// ==================== 状态 ====================
-function appState() {
-  return {
-    user: JSON.parse(localStorage.getItem('user') || '{}'),
-    token: localStorage.getItem(TOKEN_KEY) || '',
-    async logout() {
-      localStorage.removeItem(TOKEN_KEY);
-      localStorage.removeItem('user');
-      location.href = API_BASE + '/login';
-    }
-  };
-}
-
-// ==================== 请求封装 ====================
-function apiBase() {
-  return API_BASE + (window.APP_API_SUFFIX !== undefined ? (window.APP_API_SUFFIX || '') : '/api');
-}
-async function api(url, opts = {}) {
-  const token = localStorage.getItem(TOKEN_KEY);
-  const path = (url.startsWith('/') ? url : '/' + url);
-  const res = await fetch(apiBase() + path, {
-    ...opts,
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token ? { 'Authorization': 'Bearer ' + token } : {}),
-      ...opts.headers,
-    },
-  });
-  const data = await res.json().catch(() => ({}));
-  if (data.code !== 0 && data.code !== undefined) {
-    throw new Error(data.message || '请求失败');
-  }
-  return data;
-}
-
-async function apiFormData(url, formData) {
-  const token = localStorage.getItem(TOKEN_KEY);
-  const path = (url.startsWith('/') ? url : '/' + url);
-  const res = await fetch(apiBase() + path, {
-    method: 'POST',
-    headers: token ? { 'Authorization': 'Bearer ' + token } : {},
-    body: formData,
-  });
-  const data = await res.json().catch(() => ({}));
-  if (data.code !== 0 && data.code !== undefined) throw new Error(data.message || '上传失败');
-  return data;
-}
-
-// ==================== 统一弹窗 ====================
-window.Modal = {
-  open(options = {}) {
-    const { title = '', body = '', confirmText = '确定', onConfirm } = options;
-    const isDark = document.documentElement.classList.contains('dark');
-    let root = document.getElementById('modal-root');
-    if (!root) {
-      root = document.createElement('div');
-      root.id = 'modal-root';
-      document.body.appendChild(root);
-    }
-    root.innerHTML = `
-      <div id="modal-instance" class="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm" style="background: ${isDark ? 'rgba(0,0,0,0.7)' : 'rgba(0,0,0,0.5)'}; animation: fadeIn 0.2s ease-out;">
-        <div class="relative w-full max-w-lg rounded-2xl backdrop-blur-xl border shadow-2xl ${isDark ? 'bg-slate-900/95 border-slate-700/50' : 'bg-white/95 border-slate-200'}" style="animation: scaleIn 0.2s ease-out;">
-          <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-3xl"></div>
-          <div class="relative z-10">
-            <div class="flex items-center justify-between p-6 border-b ${isDark ? 'border-slate-700/50' : 'border-slate-200'}">
-              <h3 class="text-xl font-bold ${isDark ? 'text-white' : 'text-slate-900'}">${title}</h3>
-              <button type="button" class="modal-cancel transition-colors ${isDark ? 'text-slate-400 hover:text-white' : 'text-slate-500 hover:text-slate-900'}">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
-              </button>
-            </div>
-            <div class="p-6 ${isDark ? 'text-slate-300' : 'text-slate-700'}">${body}</div>
-            <div class="p-6 border-t ${isDark ? 'border-slate-700/50' : 'border-slate-200'} flex justify-end gap-3">
-              <button type="button" class="btn-secondary modal-cancel-btn px-5 py-2.5">取消</button>
-              ${confirmText ? `<button type="button" class="btn-primary modal-confirm px-5 py-2.5 shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/40">${confirmText}</button>` : ''}
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
-    const close = () => {
-      const instance = root.querySelector('#modal-instance');
-      if (instance) {
-        instance.style.animation = 'fadeOut 0.15s ease-in';
-        setTimeout(() => { root.innerHTML = ''; }, 150);
-      } else {
-        root.innerHTML = '';
-      }
-    };
-    root.querySelector('.modal-cancel')?.addEventListener('click', close);
-    root.querySelector('.modal-cancel-btn')?.addEventListener('click', close);
-    root.querySelector('.modal-confirm')?.addEventListener('click', () => {
-      if (onConfirm) onConfirm();
-      close();
-    });
-    root.querySelector('#modal-instance')?.addEventListener('click', (e) => {
-      if (e.target.id === 'modal-instance') close();
-    });
-    return { close };
+window.RowActions = {
+  edit: (row) => `<button type="button" class="crud-row-btn row-edit" data-id="${row.id}">
+    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+    <span>编辑</span>
+  </button>`,
+  delete: (row) => `<button type="button" class="crud-row-btn row-delete" data-id="${row.id}">
+    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+    <span>删除</span>
+  </button>`,
+  link: (href, label, opts) => {
+    const target = (opts && opts.target) || '_blank';
+    return `<a href="${(href || '#').replace(/"/g, '&quot;')}" target="${target}" class="crud-row-btn crud-row-btn-link">
+      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+      <span>${(label || '').replace(/</g, '&lt;')}</span>
+    </a>`;
   },
-  confirm(message, onConfirm) {
-    const isDark = document.documentElement.classList.contains('dark');
-    return this.open({ title: '确认操作', body: `<p class="${isDark ? 'text-slate-300' : 'text-slate-700'}">${message}</p>`, confirmText: '确定', onConfirm });
-  }
+  wrap: (items) => `<div class="crud-row-actions">${Array.isArray(items) ? items.join('') : items}</div>`
 };
 
-// ==================== 表格 + 分页 + 筛选 ====================
+/**
+ * 表格 + 分页 + 筛选 - CRUD 页面组件
+ * 依赖：api, Modal
+ */
 window.CrudPage = function(config) {
   const { apiPath, columns, idField = 'id', batchActions = [], afterLoad } = config;
   let page = 1, perPage = 20, total = 0, totalPages = 1, list = [], filters = {};
@@ -139,7 +50,7 @@ window.CrudPage = function(config) {
             <input type="checkbox" class="row-check rounded text-emerald-500 cursor-pointer ${isDark ? 'border-slate-600 bg-slate-800/50 focus:ring-emerald-500/30' : 'border-slate-300 bg-white focus:ring-emerald-500/20'}" value="${row[idField]}" ${checkedAttr}>
           </td>
           ${cells}
-          <td class="px-5 py-4 text-right opacity-0 group-hover:opacity-100 transition-opacity">
+          <td class="px-5 py-4 text-right">
             ${config.rowActions ? config.rowActions(row) : ''}
           </td>
         </tr>
@@ -154,7 +65,7 @@ window.CrudPage = function(config) {
                 <input type="checkbox" class="select-all rounded text-emerald-500 cursor-pointer ${isDark ? 'border-slate-600 bg-slate-800/50 focus:ring-emerald-500/30' : 'border-slate-300 bg-white focus:ring-emerald-500/20'}">
               </th>
               ${thead}
-              <th class="w-32 px-5 py-4 text-right text-xs font-semibold uppercase tracking-wider ${isDark ? 'text-slate-400' : 'text-slate-600'}">操作</th>
+              <th class="w-44 min-w-[180px] px-5 py-4 text-right text-xs font-semibold uppercase tracking-wider ${isDark ? 'text-slate-400' : 'text-slate-600'}">操作</th>
             </tr>
           </thead>
           <tbody class="${isDark ? 'divide-y divide-slate-800/50' : 'divide-y divide-slate-200'}">

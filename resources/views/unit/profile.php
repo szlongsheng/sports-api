@@ -5,10 +5,7 @@ $showHeader = true;
 $pageTitle = '单位信息';
 $baseUrl = '/unit';
 $siteName = '单位端';
-$navItems = [
-  ['label' => '仪表盘', 'url' => '/unit/dashboard', 'active' => false],
-  ['label' => '单位信息', 'url' => '/unit/profile', 'active' => true],
-];
+$navItems = unit_nav_items('/unit/profile');
 $content = <<<'HTML'
 <div class="mb-6">
   <h2 class="text-2xl font-bold mb-2 transition-colors dark:text-white light:text-slate-900">单位信息</h2>

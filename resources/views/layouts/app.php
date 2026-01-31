@@ -146,7 +146,10 @@
       };
     }
   </script>
-  <script src="/build/js/app.js"></script>
+  <script src="/build/js/api.js"></script>
+  <script src="/build/js/state.js"></script>
+  <script src="/build/js/modal.js"></script>
+  <script src="/build/js/crud.js"></script>
   <script src="/build/js/upload.js"></script>
   <?= $scripts ?? '' ?>
 </body>

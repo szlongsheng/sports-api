@@ -148,7 +148,7 @@
         const data = await res.json();
         if (data.code === 0 && data.data?.token) {
           localStorage.setItem('unit_token', data.data.token);
-          localStorage.setItem('user', JSON.stringify(data.data.user || { account: fd.get('account') }));
+          localStorage.setItem('unit_user', JSON.stringify(data.data.user || { account: fd.get('account') }));
           location.href = '/unit/dashboard';
         } else {
           errEl.textContent = data.message || '登录失败';

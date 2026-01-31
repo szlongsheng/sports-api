@@ -148,7 +148,7 @@
         const data = await res.json();
         if (data.code === 0 && data.data?.token) {
           localStorage.setItem('admin_token', data.data.token);
-          localStorage.setItem('user', JSON.stringify(data.data.user || { username: fd.get('username') }));
+          localStorage.setItem('admin_user', JSON.stringify(data.data.user || { username: fd.get('username') }));
           location.href = '/admin/dashboard';
         } else {
           errEl.textContent = data.message || '登录失败';

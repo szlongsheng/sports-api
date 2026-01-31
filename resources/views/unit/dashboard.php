@@ -5,10 +5,7 @@ $showHeader = true;
 $pageTitle = '仪表盘';
 $baseUrl = '/unit';
 $siteName = '单位端';
-$navItems = [
-  ['label' => '仪表盘', 'url' => '/unit/dashboard', 'active' => true],
-  ['label' => '单位信息', 'url' => '/unit/profile', 'active' => false],
-];
+$navItems = unit_nav_items('/unit/dashboard');
 $content = <<<'HTML'
 <!-- 欢迎卡片 -->
 <div class="mb-8">

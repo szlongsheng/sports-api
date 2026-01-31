@@ -27,6 +27,38 @@ function json_error(int $code = 1, string $message = 'error', $data = null): arr
 }
 
 /**
+ * 单位端侧边栏导航（传入当前路径标记 active）
+ */
+function unit_nav_items(string $activePath = ''): array
+{
+    $items = [
+        ['label' => '仪表盘', 'url' => '/unit/dashboard'],
+        ['label' => '单位信息', 'url' => '/unit/profile'],
+    ];
+    foreach ($items as &$item) {
+        $item['active'] = ($item['url'] === $activePath);
+    }
+    return $items;
+}
+
+/**
+ * 管理端侧边栏导航（传入当前路径标记 active）
+ */
+function admin_nav_items(string $activePath = ''): array
+{
+    $items = [
+        ['label' => '仪表盘', 'url' => '/admin/dashboard'],
+        ['label' => '管理员', 'url' => '/admin/users'],
+        ['label' => '用户管理', 'url' => '/admin/members'],
+        ['label' => '单位管理', 'url' => '/admin/units'],
+    ];
+    foreach ($items as &$item) {
+        $item['active'] = ($item['url'] === $activePath);
+    }
+    return $items;
+}
+
+/**
  * 渲染视图（PHP 模板）
  */
 function view(string $path, array $data = []): string

@@ -20,6 +20,22 @@ return function (App $app): void {
     // 健康检查（三端通用）
     $app->get('/ping', \App\Controllers\Common\PingController::class . ':index');
 
+    // DEBUG: 上传诊断（仅 APP_DEBUG=true 时有效，用于排查 $_FILES 为空问题）
+    if (($_ENV['APP_DEBUG'] ?? '') === 'true') {
+        $app->post('/debug/upload-check', function ($req, $res) {
+            $files = $req->getUploadedFiles();
+            $body = json_encode([
+                'FILES_keys' => array_keys($_FILES),
+                'FILES' => $_FILES,
+                'getUploadedFiles_keys' => array_keys($files),
+                'method' => $req->getMethod(),
+                'content_type' => $req->getHeader('Content-Type')[0] ?? null,
+            ], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+            $res->getBody()->write($body);
+            return $res->withHeader('Content-Type', 'application/json');
+        });
+    }
+
     // ==================== 加载各端路由 ====================
     // 管理端路由
     (require __DIR__ . '/routes/admin.php')($app);
