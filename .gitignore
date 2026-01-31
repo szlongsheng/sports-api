@@ -1,0 +1,9 @@
+/vendor/
+/node_modules/
+.env
+composer.lock
+*.log
+.idea/
+.vscode/
+/public/uploads/*
+!/public/uploads/.gitkeep

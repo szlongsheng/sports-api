@@ -1,0 +1,23 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Middleware;
+
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+
+class JsonResponseMiddleware implements MiddlewareInterface
+{
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+    {
+        $response = $handler->handle($request);
+        // 已设置 Content-Type 的（如 HTML 页面）不覆盖
+        if ($response->hasHeader('Content-Type')) {
+            return $response;
+        }
+        return $response->withHeader('Content-Type', 'application/json;charset=utf-8');
+    }
+}
